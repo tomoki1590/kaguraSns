@@ -15,8 +15,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  String? email;
-  String? password;
+  String email = "";
+  String password = "";
   bool isVisible = false;
   void toggleShowPassword() {
     setState(() {
@@ -92,12 +92,36 @@ class _LoginState extends State<Login> {
                 const SizedBox(
                   height: 16,
                 ),
-                ElevatedButton(onPressed: () {}, child: const Text('ログイン')),
+                ElevatedButton(
+                    onPressed: () async {
+                      try {
+                        final User? user = (await FirebaseAuth.instance
+                                .signInWithEmailAndPassword(
+                                    email: email, password: password))
+                            .user;
+                        if (user != null) {
+                          final snackBar = SnackBar(
+                            content:
+                                Text("ログインしました${user.email} , ${user.uid}"),
+                          );
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (builder) => const HomeScreen()));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      } catch (e) {
+                        final snackBar = SnackBar(
+                          content: Text("エラー発生しました$e"),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    },
+                    child: const Text('ログイン')),
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
                   child: TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (builder) => const SignUp()));
                       },
                       child: const Text("初めての方はこちらから")),
@@ -107,10 +131,8 @@ class _LoginState extends State<Login> {
                   await signInWithGogle();
 
                   if (mounted) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()),
-                        (route) => true);
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const HomeScreen()));
                   }
                 }),
                 Padding(

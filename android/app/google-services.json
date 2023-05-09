@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "917559519170",
+    "project_id": "kagurasns-611f4",
+    "storage_bucket": "kagurasns-611f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917559519170:android:f49193f1fb274b29a4185b",
+        "android_client_info": {
+          "package_name": "com.example.kagura_sns"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917559519170-ako5sn2p35gv0mccf1eikt0v5jv4s2g9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDd7VxZDO3cTzP5K5AR3ermXwtzotJDhF8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917559519170-ako5sn2p35gv0mccf1eikt0v5jv4s2g9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "917559519170-5js447bbue0injul47p71up09hgfbdeu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.kaguraSns"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

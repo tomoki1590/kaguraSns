@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'account_tab.dart';
-import 'chat_tab.dart';
-import 'kagura_add.dart';
-import 'kagura_tab.dart';
-import 'search_tab.dart';
+import 'view/account_tab.dart';
+import 'view/chat_tab.dart';
+import 'view/kagura_add.dart';
+import 'view/kagura_tab.dart';
+import 'view/search_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
