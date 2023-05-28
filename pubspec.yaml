@@ -39,11 +39,30 @@ dependencies:
   cloud_firestore: ^4.5.3
   image_picker: ^0.8.7+4
   dotted_border: ^2.0.0+3
+  firebase_storage: ^11.1.2
+  path_provider: ^2.0.14
+  flutter_native_splash: ^2.2.19
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "asstes/images/kagurasplash(1).png"
+flutter_native_splash:
+  ios_content_mode: center
+  color: "#add8e6"
+  image: "asstes/images/kagurasplash(1).png"
+  color_dark: "#262626"
+  image_dark: "asstes/images/kagurasplash(1).png"
+  fullscreen: true
+  # android_12:
+  # icon_background_color: '#add8e6'
+  # image: 'assets/images/kagurasplash(1) .png'
+  # icon_background_color_dark: '#262626'
+  # image_dark: 'assets/images/kagurasplash(1) .png'
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -62,11 +81,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-
-  # An image asset can refer to one or more resolution-specific "variants", see
+assets:
+  - images/kagurasplash(1).png
+    # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see

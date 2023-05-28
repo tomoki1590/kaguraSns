@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDd7VxZDO3cTzP5K5AR3ermXwtzotJDhF8',
-    appId: '1:917559519170:android:f49193f1fb274b29a4185b',
-    messagingSenderId: '917559519170',
-    projectId: 'kagurasns-611f4',
-    storageBucket: 'kagurasns-611f4.appspot.com',
+    apiKey: 'AIzaSyAOYCcbmyETVxMFBjh16c2nFmjWwvoxAUc',
+    appId: '1:743338390026:android:c616304d3be6d207bba5f3',
+    messagingSenderId: '743338390026',
+    projectId: 'kagurasns-release',
+    storageBucket: 'kagurasns-release.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCUiDQS8udGSKNwgpMkfeqgp_Ctom5t8qQ',
-    appId: '1:917559519170:ios:a96985e25dc8d600a4185b',
-    messagingSenderId: '917559519170',
-    projectId: 'kagurasns-611f4',
-    storageBucket: 'kagurasns-611f4.appspot.com',
-    iosClientId: '917559519170-5js447bbue0injul47p71up09hgfbdeu.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCUNPXnVQCz5QhRrewaJTQL_RaARW5tTNI',
+    appId: '1:743338390026:ios:934a7f8a83291c18bba5f3',
+    messagingSenderId: '743338390026',
+    projectId: 'kagurasns-release',
+    storageBucket: 'kagurasns-release.appspot.com',
+    iosClientId: '743338390026-ebgsbcrovr704a0fipq7a4i1rdn7nstr.apps.googleusercontent.com',
     iosBundleId: 'com.example.kaguraSns',
   );
 }

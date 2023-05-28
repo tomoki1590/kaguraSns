@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kagura_sns/component/dialog.dart';
 
@@ -21,36 +22,35 @@ class _KaguraAddState extends State<KaguraAdd> {
   String kagura = "";
   String place = "";
   String point = "";
+  String uid = "";
+  String? imgUrl;
+
+  final userID = FirebaseAuth.instance.currentUser?.uid ?? '';
+
   final FirebaseFirestore _kaguraFire = FirebaseFirestore.instance;
 
-  Future getImageFromCamera() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        image = File(pickedFile.path);
-      }
-    });
-  }
+  // Future getImageFromCamera() async {
+  //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
+  //   setState(() {
+  //     if (pickedFile != null) {
+  //       image = File(pickedFile.path);
+  //     }
+  //   });
+  // }
 
-  void getImages() async {
-    final List<XFile>? selectedImages = await picker.pickMultiImage();
-    if (selectedImages!.isNotEmpty) {
-      imageList!.addAll(selectedImages);
-    }
-  }
+  // void getImages() async {
+  //   final List<XFile>? selectedImages = await picker.pickMultiImage();
+  //   if (selectedImages!.isNotEmpty) {
+  //     imageList!.addAll(selectedImages);
+  //   }
+  // }
 
   Future getImageFromGallery() async {
-    try {
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        setState(() {
-          image = File(pickedFile.path);
-        });
-      } else {
-        print('No image was selected.');
-      }
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        image = File(pickedFile.path);
+      });
     }
   }
 
@@ -73,10 +73,20 @@ class _KaguraAddState extends State<KaguraAdd> {
         actions: [
           ElevatedButton(
               onPressed: () async {
-                await _kaguraFire.collection('kaguraSNS').add({
+                final doc = _kaguraFire.collection('kagura').doc();
+                if (image != null) {
+                  FirebaseStorage storage = FirebaseStorage.instance;
+                  final task =
+                      await storage.ref('kagura/${doc.id}').putFile(image!);
+                  imgUrl = await task.ref.getDownloadURL();
+                }
+
+                await doc.set({
                   'kagura': kagura,
                   'place': place,
                   'point': point,
+                  'imgUrl': imgUrl,
+                  "uid": FirebaseAuth.instance.currentUser!.uid,
                 });
                 showDialog(
                     context: context,
@@ -88,69 +98,71 @@ class _KaguraAddState extends State<KaguraAdd> {
         ],
         title: const Text('神楽情報発信'),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(
-              width: 300,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(hintText: "演目名"),
-                  onChanged: (text) {
-                    setKagura(text);
-                  },
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 300,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(hintText: "場所"),
-                  onChanged: (text) {
-                    setPlace(text);
-                  },
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 300,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(hintText: "推したいポイント"),
-                  onChanged: (text) {
-                    setPoint(text);
-                  },
-                ),
-              ),
-            ),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                DottedBorder(
-                  dashPattern: const [2, 1],
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    color: const Color(0xFFE7E7E7),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: const InputDecoration(hintText: "演目名"),
+                    onChanged: (text) {
+                      setKagura(text);
+                    },
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.camera_enhance, size: 30),
-                  onPressed: () {
-                    getImages();
-                  },
+              ),
+              SizedBox(
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: const InputDecoration(hintText: "場所"),
+                    onChanged: (text) {
+                      setPlace(text);
+                    },
+                  ),
                 ),
-              ],
-            ),
-            const Text('helloっっs'),
-          ],
+              ),
+              SizedBox(
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: const InputDecoration(hintText: "推したいポイント"),
+                    onChanged: (text) {
+                      setPoint(text);
+                    },
+                  ),
+                ),
+              ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  DottedBorder(
+                    dashPattern: const [2, 1],
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      color: const Color(0xFFE7E7E7),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.camera_enhance, size: 30),
+                    onPressed: () {
+                      getImageFromGallery();
+                    },
+                  ),
+                ],
+              ),
+              image != null ? Image.file(image!) : const Text("何も選ばれてませんよ")
+            ],
+          ),
         ),
       ),
     );
