@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kagura_sns/log/log_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kagura_sns/log/terms_of_service_page.dart';
 
+import 'disclaimer_page.dart';
+import 'log_in.dart';
 import 'validate_text.dart';
 
 class SignUp extends StatefulWidget {
@@ -28,6 +30,8 @@ class _SignUpState extends State<SignUp> {
   File? image;
   final picker = ImagePicker();
   String? imgUrl;
+  bool _termsFlag = false;
+  bool _disclaimerFlag = false;
 
   Future getImageFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -127,58 +131,111 @@ class _SignUpState extends State<SignUp> {
                     obscureText: !isVisible,
                   ),
                 ),
+                Text("登録前に下記の事項に目を通してください"),
+                Row(
+                  children: [
+                    Checkbox(
+                        value: _termsFlag,
+                        onChanged: (value) {
+                          setState(() {
+                            _termsFlag = !_termsFlag;
+                          });
+                        }),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (context) => TermsOfServicePage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        '利用規約',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                        value: _disclaimerFlag,
+                        onChanged: (value) {
+                          setState(() {
+                            _disclaimerFlag = !_disclaimerFlag;
+                          });
+                        }),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (context) => DisclaimerPage(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        '免責事項',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ],
+                ),
                 ElevatedButton(
                     onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        try {
-                          UserCredential userCredential = await FirebaseAuth
-                              .instance
-                              .createUserWithEmailAndPassword(
-                                  email: email, password: password);
-                          User? user = userCredential.user;
-                          if (user != null) {
-                            final doc = _firestore.collection('users').doc();
-                            if (image != null) {
-                              FirebaseStorage storage =
-                                  FirebaseStorage.instance;
-                              final task = await storage
-                                  .ref('users/${doc.id}')
-                                  .putFile(image!);
-                              imgUrl = await task.ref.getDownloadURL();
+                      if (_disclaimerFlag == true &&
+                          _termsFlag == true &&
+                          (name != null || name != "")) {
+                        if (_formKey.currentState!.validate()) {
+                          try {
+                            UserCredential userCredential = await FirebaseAuth
+                                .instance
+                                .createUserWithEmailAndPassword(
+                                    email: email, password: password);
+                            User? user = userCredential.user;
+                            if (user != null) {
+                              final doc = _firestore.collection('users').doc();
+                              if (image != null) {
+                                FirebaseStorage storage =
+                                    FirebaseStorage.instance;
+                                final task = await storage
+                                    .ref('users/${doc.id}')
+                                    .putFile(image!);
+                                imgUrl = await task.ref.getDownloadURL();
+                              }
+                              await _firestore
+                                  .collection('users')
+                                  .doc(user.uid)
+                                  .set({
+                                'name': name,
+                                'email': email,
+                                'uid': user.uid,
+                                'imgUrl': imgUrl,
+                              });
                             }
-                            await _firestore
-                                .collection('users')
-                                .doc(user
-                                    .uid) 
-                                .set({
+                            await _firestore.collection('users').add({
                               'name': name,
                               'email': email,
-                              'uid': user.uid,
+                              'uid': uid,
                               'imgUrl': imgUrl,
                             });
-                          }
-                          await _firestore.collection('users').add({
-                            'name': name,
-                            'email': email,
-                            'uid': uid,
-                            'imgUrl': imgUrl,
-                          });
-                          const snackBar = SnackBar(
-                            content: Text("成功です"),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (builder) => const Login()));
-                        } on FirebaseAuthException catch (e) {
-                          if (e.code == "email-already-in-use") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("このメールアドレスはすでに登録されています"),
-                              ),
+                            const snackBar = SnackBar(
+                              content: Text("新規登録完了です"),
                             );
-                          } else {
-                            rethrow;
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (builder) => const Login()));
+                          } on FirebaseAuthException catch (e) {
+                            if (e.code == "email-already-in-use") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("このメールアドレスはすでに登録されています"),
+                                ),
+                              );
+                            } else {
+                              rethrow;
+                            }
                           }
                         }
                       }

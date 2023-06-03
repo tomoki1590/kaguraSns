@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../home_screen.dart';
@@ -126,29 +125,29 @@ class _LoginState extends State<Login> {
                       },
                       child: const Text("初めての方はこちらから")),
                 ),
-                SignInButton(Buttons.Google, text: "Googleログイン",
-                    onPressed: () async {
-                  await signInWithGogle();
+                // SignInButton(Buttons.Google, text: "Googleログイン",
+                //     onPressed: () async {
+                //   await signInWithGogle();
 
-                  if (mounted) {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
-                  }
-                }),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SignInButton(
-                    Buttons.Apple,
-                    onPressed: () {},
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SignInButton(
-                    Buttons.Email,
-                    onPressed: () {},
-                  ),
-                ),
+                //   if (mounted) {
+                //     Navigator.of(context).pushReplacement(MaterialPageRoute(
+                //         builder: (context) => const HomeScreen()));
+                //   }
+                // }),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: SignInButton(
+                //     Buttons.Apple,
+                //     onPressed: () {},
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: SignInButton(
+                //     Buttons.Email,
+                //     onPressed: () {},
+                //   ),
+                // ),
               ],
             ),
           ),

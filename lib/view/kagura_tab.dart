@@ -71,9 +71,9 @@ class _KaguraTabState extends State<KaguraTab> {
                                   );
                                 })
                             : const Text("不正な投稿データです"),
-                        Text(kagura['kagura']!),
-                        Text(kagura['point']!),
-                        Text(kagura['place']!),
+                        Text("演目:" + kagura['kagura']!),
+                        Text("場所:" + kagura['place']!),
+                        Text("魅力:" + kagura['point']!),
                         kagura['imgUrl'] != null
                             ? Image.network(kagura['imgUrl'])
                             : const Text(
