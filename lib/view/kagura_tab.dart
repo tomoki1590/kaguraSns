@@ -76,10 +76,7 @@ class _KaguraTabState extends State<KaguraTab> {
                         Text("魅力:" + kagura['point']!),
                         kagura['imgUrl'] != null
                             ? Image.network(kagura['imgUrl'])
-                            : const Text(
-                                "null",
-                                style: TextStyle(fontSize: 100),
-                              ),
+                            : Container()
                       ],
                     ),
                   ),

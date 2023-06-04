@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kagura_sns/log/change_pass_page.dart';
 
 import '../home_screen.dart';
 import 'sign_up.dart';
@@ -121,10 +122,17 @@ class _LoginState extends State<Login> {
                   child: TextButton(
                       onPressed: () {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (builder) => const SignUp()));
+                            builder: (builder) => PasswordChangePage()));
                       },
-                      child: const Text("初めての方はこちらから")),
+                      child: const Text("パスワードを忘れた方はこちら")),
                 ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (builder) => const SignUp()));
+                    },
+                    child: const Text("初めての方はこちらから")),
+
                 // SignInButton(Buttons.Google, text: "Googleログイン",
                 //     onPressed: () async {
                 //   await signInWithGogle();
