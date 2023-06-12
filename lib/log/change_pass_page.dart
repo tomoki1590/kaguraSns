@@ -51,8 +51,9 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (builder) => Login()));
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (builder) => const Login()),
+                        (Route<dynamic> route) => false);
                   },
                   child: Text("送信"))
             ],

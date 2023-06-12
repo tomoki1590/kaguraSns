@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kagura_sns/log/change_pass_page.dart';
 
 import '../home_screen.dart';
@@ -32,15 +31,15 @@ class _LoginState extends State<Login> {
     this.password = password;
   }
 
-  Future<void> signInWithGogle() async {
-    final googleUser =
-        await GoogleSignIn(scopes: ['profile', 'email']).signIn();
-    final googleAuth = await googleUser?.authentication;
-    final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
+  // Future<void> signInWithGogle() async {
+  //   final googleUser =
+  //       await GoogleSignIn(scopes: ['profile', 'email']).signIn();
+  //   final googleAuth = await googleUser?.authentication;
+  //   final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
 
-    await FirebaseAuth.instance.signInWithCredential(credential);
-  }
+  //   await FirebaseAuth.instance.signInWithCredential(credential);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +120,7 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.only(top: 30),
                   child: TextButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        Navigator.of(context).push(MaterialPageRoute(
                             builder: (builder) => PasswordChangePage()));
                       },
                       child: const Text("パスワードを忘れた方はこちら")),

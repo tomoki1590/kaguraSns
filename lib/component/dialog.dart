@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kagura_sns/home_screen.dart';
 
 class AlertDialogComponent extends StatelessWidget {
   const AlertDialogComponent({Key? key}) : super(key: key);
@@ -11,16 +10,13 @@ class AlertDialogComponent extends StatelessWidget {
       actions: <Widget>[
         GestureDetector(
           child: TextButton(
-            onPressed: () {},
+            onPressed: () => Navigator.of(context).pop(false),
             child: const Text('いいえ'),
           ),
         ),
         GestureDetector(
           child: TextButton(
-              onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (builder) => const HomeScreen()));
-              },
+              onPressed: () => Navigator.of(context).pop(true),
               child: const Text('はい')),
         )
       ],

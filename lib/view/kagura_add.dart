@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kagura_sns/component/dialog.dart';
+import 'package:kagura_sns/home_screen.dart';
 
 class KaguraAdd extends StatefulWidget {
   const KaguraAdd({Key? key}) : super(key: key);
@@ -73,26 +74,31 @@ class _KaguraAddState extends State<KaguraAdd> {
         actions: [
           ElevatedButton(
               onPressed: () async {
-                final doc = _kaguraFire.collection('kagura').doc();
-                if (image != null) {
-                  FirebaseStorage storage = FirebaseStorage.instance;
-                  final task =
-                      await storage.ref('kagura/${doc.id}').putFile(image!);
-                  imgUrl = await task.ref.getDownloadURL();
-                }
+                bool shouldPost = await showDialog(
+                        context: context,
+                        builder: (_) {
+                          return AlertDialogComponent();
+                        }) ??
+                    false;
+                if (shouldPost) {
+                  final doc = _kaguraFire.collection('kagura').doc();
+                  if (image != null) {
+                    FirebaseStorage storage = FirebaseStorage.instance;
+                    final task =
+                        await storage.ref('kagura/${doc.id}').putFile(image!);
+                    imgUrl = await task.ref.getDownloadURL();
+                  }
 
-                await doc.set({
-                  'kagura': kagura,
-                  'place': place,
-                  'point': point,
-                  'imgUrl': imgUrl,
-                  "uid": FirebaseAuth.instance.currentUser!.uid,
-                });
-                showDialog(
-                    context: context,
-                    builder: (_) {
-                      return const AlertDialogComponent();
-                    });
+                  await doc.set({
+                    'kagura': kagura,
+                    'place': place,
+                    'point': point,
+                    'imgUrl': imgUrl,
+                    "uid": FirebaseAuth.instance.currentUser!.uid,
+                  });
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (builder) => const HomeScreen()));
+                }
               },
               child: const Text('発信！！'))
         ],
