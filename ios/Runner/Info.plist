@@ -54,6 +54,6 @@
 		<key>UIStatusBarHidden</key>
 		<true/>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>アプリに表示・使用するための写真や動画をライブラリから選択する目的でリクエストします。</string>
+		<string>神楽ページで投稿された写真を表示・使用するために写真の使用許可をお願いします。</string>
 	</dict>
 </plist>
