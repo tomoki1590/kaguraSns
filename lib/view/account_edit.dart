@@ -112,9 +112,10 @@ class _AccountEditState extends State<AccountEdit> {
                     ElevatedButton(
                         onPressed: () async {
                           await FirebaseAuth.instance.signOut();
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                  builder: (builder) => const Login()));
+                                  builder: (builder) => const Login()),
+                              (Route<dynamic> route) => false);
                         },
                         child: const Text("ログアウト")),
                     ElevatedButton(
