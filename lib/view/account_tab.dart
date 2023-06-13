@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:kagura_sns/log/log_in.dart';
 import 'package:kagura_sns/view/account_edit.dart';
 
 class AccountTab extends StatefulWidget {
@@ -17,6 +16,7 @@ class _AccountTabState extends State<AccountTab> {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     String currentUid = "";
+
     if (user != null) {
       currentUid = user.uid;
       Text(currentUid);
@@ -27,29 +27,32 @@ class _AccountTabState extends State<AccountTab> {
         FirebaseFirestore.instance.collection('users');
 
     return Scaffold(
-      appBar: AppBar(title: const Text("アカウント"), actions: [
-        IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (builder) => const AccountEdit()));
-            },
-            icon: const Icon(Icons.account_box)),
-      ]),
+      appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: const Text(
+            "アカウント",
+            style: TextStyle(color: Colors.red),
+          ),
+          actions: [
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (builder) => const AccountEdit()));
+              },
+              label: Text('設定'),
+              icon: const Icon(
+                Icons.settings,
+                color: Colors.red,
+              ),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
+            ),
+          ]),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Center(
-              child: Text(currentUid.isEmpty
-                  ? 'ユーザーはログインしていません。'
-                  : '現在のUID: $currentUid'),
+              child: Text(currentUid.isEmpty ? 'ユーザーはログインしていません。' : ''),
             ),
-            ElevatedButton(
-                onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (builder) => const Login()));
-                },
-                child: const Text("ログアウト")),
             const Divider(),
             StreamBuilder(
                 stream: usersCollection.doc(currentUid).snapshots(),
@@ -94,6 +97,7 @@ class _AccountTabState extends State<AccountTab> {
                       const Divider(),
                       const Text("これまでに投稿したもの"),
                       Card(
+                        shadowColor: Colors.black,
                         child: StreamBuilder(
                           stream: FirebaseFirestore.instance
                               .collection('kagura')
@@ -136,10 +140,7 @@ class _AccountTabState extends State<AccountTab> {
                                         Text(kagura['place']!),
                                         kagura['imgUrl'] != null
                                             ? Image.network(kagura['imgUrl'])
-                                            : const Text(
-                                                "null",
-                                                style: TextStyle(fontSize: 100),
-                                              ),
+                                            : const Text("画像なし"),
                                       ],
                                     ),
                                   ),

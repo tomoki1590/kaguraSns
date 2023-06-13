@@ -6,6 +6,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../log/log_in.dart';
+import '../log/relog_page.dart';
+
 class AccountEdit extends StatefulWidget {
   const AccountEdit({Key? key}) : super(key: key);
 
@@ -51,7 +54,12 @@ class _AccountEditState extends State<AccountEdit> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("編集画面"),
+        backgroundColor: Colors.white,
+        title: const Text(
+          "編集画面",
+          style: TextStyle(color: Colors.red),
+        ),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Column(
         children: [
@@ -75,29 +83,46 @@ class _AccountEditState extends State<AccountEdit> {
                         onTap: () async {
                           await getImageFromGallery();
                         },
-                        child: SizedBox(
-                          width: 300,
-                          height: 300,
-                          child: CircleAvatar(
-                            backgroundImage:
-                                data['imgUrl'] != null && data['imgUrl'] != ''
-                                    ? NetworkImage(data['imgUrl'])
-                                    : null,
-                            child:
-                                data['imgUrl'] != null && data['imgUrl'] != ''
-                                    ? null
-                                    : const Center(
-                                        child: Text(
-                                          '画像がありません',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
+                        child: Center(
+                          child: SizedBox(
+                            width: 300,
+                            height: 300,
+                            child: CircleAvatar(
+                              backgroundImage:
+                                  data['imgUrl'] != null && data['imgUrl'] != ''
+                                      ? NetworkImage(data['imgUrl'])
+                                      : null,
+                              child:
+                                  data['imgUrl'] != null && data['imgUrl'] != ''
+                                      ? null
+                                      : const Center(
+                                          child: Text(
+                                            '画像がありません',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                            ),
                                           ),
                                         ),
-                                      ),
+                            ),
                           ),
                         )),
+                    Padding(padding: EdgeInsets.all(10)),
                     Text(data['name']),
+                    ElevatedButton(
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (builder) => const Login()));
+                        },
+                        child: const Text("ログアウト")),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (builder) => ReLoginPage()));
+                        },
+                        child: const Text('アカウント削除')),
                   ],
                 );
               }),
