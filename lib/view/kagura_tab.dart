@@ -15,7 +15,6 @@ class KaguraTab extends StatefulWidget {
 class _KaguraTabState extends State<KaguraTab> {
   CollectionReference kaguraSNSCollection =
       FirebaseFirestore.instance.collection('kagura');
-  final userID = FirebaseAuth.instance.currentUser?.uid ?? '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,81 +42,109 @@ class _KaguraTabState extends State<KaguraTab> {
                   child: Card(
                     child: Column(
                       children: [
-                        kagura["uid"] != null
-                            ? FutureBuilder<DocumentSnapshot>(
-                                future: FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(kagura["uid"])
-                                    .get(),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                  if (snapshot.hasError) {
-                                    return const Text('エラーが発生しました');
-                                  }
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const CircularProgressIndicator();
-                                  }
-                                  final userDoc = snapshot.data!.data()
-                                      as Map<String, dynamic>;
+                        FutureBuilder<DocumentSnapshot>(
+                            future: FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .get(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<DocumentSnapshot> snapshot) {
+                              if (snapshot.hasError) {
+                                return const Text('エラーが発生しました');
+                              }
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              }
+                              final currentUserDoc =
                                   snapshot.data!.data() as Map<String, dynamic>;
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundImage: userDoc['imgUrl'] !=
-                                                      null &&
-                                                  userDoc['imgUrl'] != ''
-                                              ? NetworkImage(userDoc["imgUrl"])
-                                              : null,
-                                          child: userDoc['imgUrl'] != null &&
-                                                  userDoc['imgUrl'] != ''
-                                              ? null
-                                              : const Center(
-                                                  child: Text(
-                                                    '画像がありません',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16,
-                                                    ),
+                              final blockList =
+                                  currentUserDoc['block'] as List<dynamic>;
+                              return kagura["uid"] != null &&
+                                      !blockList.contains(kagura["uid"])
+                                  ? FutureBuilder<DocumentSnapshot>(
+                                      future: FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(kagura["uid"])
+                                          .get(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<DocumentSnapshot>
+                                              snapshot) {
+                                        if (snapshot.hasError) {
+                                          return const Text('エラーが発生しました');
+                                        }
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const CircularProgressIndicator();
+                                        }
+                                        final userDoc = snapshot.data!.data()
+                                            as Map<String, dynamic>;
+                                        snapshot.data!.data()
+                                            as Map<String, dynamic>;
+                                        return SizedBox(
+                                          width: double.infinity,
+                                          child: Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundImage:
+                                                    userDoc['imgUrl'] != null &&
+                                                            userDoc['imgUrl'] !=
+                                                                ''
+                                                        ? NetworkImage(
+                                                            userDoc["imgUrl"])
+                                                        : null,
+                                                child: userDoc['imgUrl'] !=
+                                                            null &&
+                                                        userDoc['imgUrl'] != ''
+                                                    ? null
+                                                    : const Center(
+                                                        child: Text(
+                                                          '画像がありません',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                      ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(userDoc["name"]),
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      showCupertinoDialog(
+                                                          context: context,
+                                                          builder: (_) {
+                                                            return ReportePage(
+                                                              docId: kaguraList[
+                                                                      index]
+                                                                  .id,
+                                                            );
+                                                          });
+                                                    },
+                                                    icon: Icon(Icons.more_vert),
                                                   ),
-                                                ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(userDoc["name"]),
-                                            IconButton(
-                                              onPressed: () {
-                                                showCupertinoDialog(
-                                                    context: context,
-                                                    builder: (_) {
-                                                      return ReportePage(
-                                                        docId: kaguraList[index]
-                                                            .id,
-                                                      );
-                                                    });
-                                              },
-                                              icon: Icon(Icons.more_vert),
-                                            ),
-                                            ElevatedButton(
-                                                child: Text('ブロック'),
-                                                onPressed: () async {
-                                                  showCupertinoDialog(
-                                                      context: context,
-                                                      builder: (_) {
-                                                        return Block();
-                                                      });
-                                                })
-                                          ],
-                                        )
-                                        //通報ボタンをつける
-                                      ],
-                                    ),
-                                  );
-                                })
-                            : const Text("不正な投稿データです"),
-                        Text('投稿ID'),
+                                                  ElevatedButton(
+                                                      child: Text('ブロック'),
+                                                      onPressed: () async {
+                                                        showCupertinoDialog(
+                                                            context: context,
+                                                            builder: (_) {
+                                                              return Block(
+                                                                block:
+                                                                    '${kagura["uid"]}をブロックしている',
+                                                              );
+                                                            });
+                                                      })
+                                                ],
+                                              )
+                                              //通報ボタンをつける
+                                            ],
+                                          ),
+                                        );
+                                      })
+                                  : const Text("不正な投稿データです");
+                            }),
                         Text("演目:" + kagura['kagura']!),
                         Text("場所:" + kagura['place']!),
                         Text("魅力:" + kagura['point']!),
