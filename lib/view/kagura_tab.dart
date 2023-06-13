@@ -15,34 +15,14 @@ class KaguraTab extends StatefulWidget {
 class _KaguraTabState extends State<KaguraTab> {
   CollectionReference kaguraSNSCollection =
       FirebaseFirestore.instance.collection('kagura');
-        ScrollController _scrollController = ScrollController();
-
-@override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _loadMoreData();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
- void _loadMoreData() {
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('神楽'),
+        title: const Text('神楽', style: TextStyle(color: Colors.red)),
+        backgroundColor: Colors.white,
+        shadowColor: Colors.white,
       ),
-      backgroundColor: Colors.black,
       body: StreamBuilder(
         stream: kaguraSNSCollection.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -55,7 +35,6 @@ class _KaguraTabState extends State<KaguraTab> {
           }
           final kaguraList = snapshot.data!.docs;
           return ListView.builder(
-            controller: _scrollController,
             itemCount: kaguraList.length,
             itemBuilder: (BuildContext context, int index) {
               final kagura = kaguraList[index].data() as Map<String, dynamic>;
@@ -74,7 +53,9 @@ class _KaguraTabState extends State<KaguraTab> {
                     }
                     final currentUserDoc =
                         snapshot.data!.data() as Map<String, dynamic>;
-                    final blockList = currentUserDoc['block'] as List<dynamic>;
+                    final blockList = currentUserDoc['block'] != null
+                        ? List<dynamic>.from(currentUserDoc['block'])
+                        : [];
                     return kagura["uid"] != null &&
                             !blockList.contains(kagura["uid"])
                         ? Card(
@@ -154,7 +135,7 @@ class _KaguraTabState extends State<KaguraTab> {
                                                               },
                                                             );
                                                           });
-                                                    })
+                                                    }),
                                               ],
                                             )
                                           ],
