@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 
 class Block extends StatelessWidget {
   final String block;
-  Block({Key? key, required this.block}) : super(key: key);
+  final Function() onPressed;
+  Block({Key? key, required this.block, required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,7 @@ class Block extends StatelessWidget {
             kaguraBlock.doc(user!.uid).update({
               'block': FieldValue.arrayUnion([block])
             });
+            onPressed();
             Navigator.pop(context);
           },
         )
