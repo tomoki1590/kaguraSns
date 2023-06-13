@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kagura_sns/log/log_in.dart';
+import 'package:kagura_sns/log/relog_page.dart';
 import 'package:kagura_sns/view/account_edit.dart';
 
 class AccountTab extends StatefulWidget {
@@ -53,6 +55,19 @@ class _AccountTabState extends State<AccountTab> {
             Center(
               child: Text(currentUid.isEmpty ? 'ユーザーはログインしていません。' : ''),
             ),
+            ElevatedButton(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (builder) => const Login()));
+                },
+                child: const Text("ログアウト")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (builder) => ReLoginPage()));
+                },
+                child: const Text('アカウント削除')),
             const Divider(),
             StreamBuilder(
                 stream: usersCollection.doc(currentUid).snapshots(),
