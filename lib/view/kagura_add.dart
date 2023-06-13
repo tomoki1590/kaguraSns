@@ -29,23 +29,6 @@ class _KaguraAddState extends State<KaguraAdd> {
   final userID = FirebaseAuth.instance.currentUser?.uid ?? '';
 
   final FirebaseFirestore _kaguraFire = FirebaseFirestore.instance;
-
-  // Future getImageFromCamera() async {
-  //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
-  //   setState(() {
-  //     if (pickedFile != null) {
-  //       image = File(pickedFile.path);
-  //     }
-  //   });
-  // }
-
-  // void getImages() async {
-  //   final List<XFile>? selectedImages = await picker.pickMultiImage();
-  //   if (selectedImages!.isNotEmpty) {
-  //     imageList!.addAll(selectedImages);
-  //   }
-  // }
-
   Future getImageFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -71,8 +54,9 @@ class _KaguraAddState extends State<KaguraAdd> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         actions: [
-          ElevatedButton(
+          ElevatedButton.icon(
               onPressed: () async {
                 bool shouldPost = await showDialog(
                         context: context,
@@ -100,9 +84,13 @@ class _KaguraAddState extends State<KaguraAdd> {
                       builder: (builder) => const HomeScreen()));
                 }
               },
-              child: const Text('発信！！'))
+              label: const Text('投稿'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 6, 6, 6),
+              ),
+              icon: Icon(Icons.send))
         ],
-        title: const Text('神楽情報発信'),
+        title: const Text('神楽情報発信', style: TextStyle(color: Colors.red)),
       ),
       body: SingleChildScrollView(
         child: Center(
