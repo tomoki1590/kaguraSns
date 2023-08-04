@@ -45,10 +45,12 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   url_launcher: ^6.1.11
   the_apple_sign_in: ^1.1.1
+  pedantic_mono: ^1.21.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.6.2
 flutter_icons:
   android: true
   ios: true

@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int indexList = 0;
-  static final List tab = [
+  static final tab = [
     const KaguraTab(),
     const KaguraAdd(),
     const AccountTab()
@@ -32,11 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: _tappedList,
         currentIndex: indexList,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "ホーム"),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: "追加"),  
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: '追加'),  
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_rounded), label: "アカウント"),
+              icon: Icon(Icons.account_circle_rounded), label: 'アカウント'),
         ],
         selectedItemColor: Colors.amber,
         unselectedItemColor: Colors.black,

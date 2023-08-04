@@ -14,8 +14,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  String email = "";
-  String password = "";
+  String email = '';
+  String password = '';
   bool isVisible = false;
   void toggleShowPassword() {
     setState(() {
@@ -45,7 +45,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("入団"),
+        title: const Text('入団'),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -59,7 +59,8 @@ class _LoginState extends State<Login> {
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: ValidateText.email,
-                      decoration: const InputDecoration(hintText: "メールアドレス"),
+                      autofillHints: [AutofillHints.email],
+                      decoration: const InputDecoration(hintText: 'メールアドレス'),
                       onChanged: (text) {
                         setEmail(text);
                       },
@@ -71,6 +72,7 @@ class _LoginState extends State<Login> {
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: ValidateText.password,
+                    autofillHints: [AutofillHints.password],
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
                           icon: Icon(isVisible
@@ -101,7 +103,7 @@ class _LoginState extends State<Login> {
                         if (user != null) {
                           final snackBar = SnackBar(
                             content:
-                                Text("ログインしました${user.email} , ${user.uid}"),
+                                Text('ログインしました${user.email} , ${user.uid}'),
                           );
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
@@ -110,7 +112,7 @@ class _LoginState extends State<Login> {
                         }
                       } catch (e) {
                         final snackBar = SnackBar(
-                          content: Text("エラー発生しました$e"),
+                          content: Text('エラー発生しました$e'),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
@@ -123,38 +125,14 @@ class _LoginState extends State<Login> {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (builder) => PasswordChangePage()));
                       },
-                      child: const Text("パスワードを忘れた方はこちら")),
+                      child: const Text('パスワードを忘れた方はこちら')),
                 ),
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (builder) => const SignUp()));
                     },
-                    child: const Text("初めての方はこちらから")),
-
-                // SignInButton(Buttons.Google, text: "Googleログイン",
-                //     onPressed: () async {
-                //   await signInWithGogle();
-
-                //   if (mounted) {
-                //     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                //         builder: (context) => const HomeScreen()));
-                //   }
-                // }),
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: SignInButton(
-                //     Buttons.Apple,
-                //     onPressed: () {},
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: SignInButton(
-                //     Buttons.Email,
-                //     onPressed: () {},
-                //   ),
-                // ),
+                    child: const Text('初めての方はこちらから')),
               ],
             ),
           ),

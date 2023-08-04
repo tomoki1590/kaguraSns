@@ -10,8 +10,8 @@ class ReLoginPage extends StatefulWidget {
 }
 
 class _ReLoginPageState extends State<ReLoginPage> {
-  String email = "";
-  String password = "";
+  String email = '';
+  String password = '';
   bool isVisible = false;
   void toggleShowPassword() {
     setState(() {
@@ -31,16 +31,16 @@ class _ReLoginPageState extends State<ReLoginPage> {
   Widget build(BuildContext context) {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
-    String currentUid = "";
+    String currentUid = '';
 
     if (user != null) {
       currentUid = user.uid;
       Text(currentUid);
     } else {
-      const Text("ユーザーはログインしていません。");
+      const Text('ユーザーはログインしていません。');
     }
     return Scaffold(
-      appBar: AppBar(title: Text("アカウント削除 ")),
+      appBar: AppBar(title: Text('アカウント削除 ')),
       body: Center(
         child: Column(
           children: [
@@ -51,7 +51,7 @@ class _ReLoginPageState extends State<ReLoginPage> {
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: ValidateText.email,
-                  decoration: const InputDecoration(hintText: "メールアドレス"),
+                  decoration: const InputDecoration(hintText: 'メールアドレス'),
                   onChanged: (text) {
                     setEmail(text);
                   },

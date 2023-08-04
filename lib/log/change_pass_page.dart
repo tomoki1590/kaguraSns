@@ -9,7 +9,7 @@ class PasswordChangePage extends StatefulWidget {
 }
 
 class _PasswordChangePageState extends State<PasswordChangePage> {
-  String email = "";
+  String email = '';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formGlobalKey = GlobalKey();
@@ -20,7 +20,7 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("パスワード変更")),
+      appBar: AppBar(title: Text('パスワード変更')),
       body: Center(
         child: Form(
           key: _formGlobalKey,
@@ -33,7 +33,7 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: ValidateText.email,
-                    decoration: const InputDecoration(hintText: "メールアドレス"),
+                    decoration: const InputDecoration(hintText: 'メールアドレス'),
                     onChanged: (text) {
                       setEmail(text);
                     },
@@ -44,10 +44,10 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
                   onPressed: () async {
                     try {
                       await _auth.sendPasswordResetEmail(email: email);
-                      print("パスワードリセット用のメールを送信しました");
+                      print('パスワードリセット用のメールを送信しました');
                     } catch (e) {
                       final snackBar = SnackBar(
-                        content: Text("エラー発生しました$e"),
+                        content: Text('エラー発生しました$e'),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }
@@ -55,7 +55,7 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
                         MaterialPageRoute(builder: (builder) => const Login()),
                         (Route<dynamic> route) => false);
                   },
-                  child: Text("送信"))
+                  child: Text('送信'))
             ],
           ),
         ),

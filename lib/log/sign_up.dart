@@ -22,10 +22,10 @@ class _SignUpState extends State<SignUp> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
 
-  String name = "";
-  String email = "";
-  String password = "";
-  String uid = "";
+  String name = '';
+  String email = '';
+  String password = '';
+  String uid = '';
   bool isVisible = false;
   File? image;
   final picker = ImagePicker();
@@ -64,7 +64,7 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("新規登録"),
+        title: const Text('新規登録'),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -88,7 +88,7 @@ class _SignUpState extends State<SignUp> {
                     padding: const EdgeInsets.symmetric(vertical: 30),
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: const InputDecoration(hintText: "ユーザーネーム"),
+                      decoration: const InputDecoration(hintText: 'ユーザーネーム'),
                       onChanged: (text) {
                         setName(text);
                       },
@@ -102,7 +102,7 @@ class _SignUpState extends State<SignUp> {
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: ValidateText.email,
-                      decoration: const InputDecoration(hintText: "メールアドレス"),
+                      decoration: const InputDecoration(hintText: 'メールアドレス'),
                       onChanged: (text) {
                         setEmail(text);
                       },
@@ -131,7 +131,7 @@ class _SignUpState extends State<SignUp> {
                     obscureText: !isVisible,
                   ),
                 ),
-                Text("登録前に下記の事項に目を通してください"),
+                Text('登録前に下記の事項に目を通してください'),
                 Row(
                   children: [
                     Checkbox(
@@ -184,7 +184,7 @@ class _SignUpState extends State<SignUp> {
                     onPressed: () async {
                       if (_disclaimerFlag == true &&
                           _termsFlag == true &&
-                          (name != null || name != "")) {
+                          (name != null || name != '')) {
                         if (_formKey.currentState!.validate()) {
                           try {
                             UserCredential userCredential = await FirebaseAuth
@@ -219,7 +219,7 @@ class _SignUpState extends State<SignUp> {
                               'imgUrl': imgUrl,
                             });
                             const snackBar = SnackBar(
-                              content: Text("新規登録完了です"),
+                              content: Text('新規登録完了です'),
                             );
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
@@ -227,10 +227,10 @@ class _SignUpState extends State<SignUp> {
                                 MaterialPageRoute(
                                     builder: (builder) => const Login()));
                           } on FirebaseAuthException catch (e) {
-                            if (e.code == "email-already-in-use") {
+                            if (e.code == 'email-already-in-use') {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text("このメールアドレスはすでに登録されています"),
+                                  content: Text('このメールアドレスはすでに登録されています'),
                                 ),
                               );
                             } else {
@@ -240,7 +240,7 @@ class _SignUpState extends State<SignUp> {
                         }
                       }
                     },
-                    child: const Text("新規登録"))
+                    child: const Text('新規登録'))
               ],
             ),
           ),

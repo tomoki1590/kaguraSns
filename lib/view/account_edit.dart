@@ -23,13 +23,13 @@ class _AccountEditState extends State<AccountEdit> {
     final User? user = auth.currentUser;
     CollectionReference usersCollection =
         FirebaseFirestore.instance.collection('users');
-    String currentUid = "";
+    String currentUid = '';
 
     if (user != null) {
       currentUid = user.uid;
       Text(currentUid);
     } else {
-      const Text("ユーザーはログインしていません。");
+      const Text('ユーザーはログインしていません。');
     }
     File? image;
     final picker = ImagePicker();
@@ -47,7 +47,7 @@ class _AccountEditState extends State<AccountEdit> {
           await FirebaseFirestore.instance
               .collection('users')
               .doc(user!.uid)
-              .update({"imgUrl": imgUrl});
+              .update({'imgUrl': imgUrl});
         }
       }
     }
@@ -56,7 +56,7 @@ class _AccountEditState extends State<AccountEdit> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(
-          "編集画面",
+          '編集画面',
           style: TextStyle(color: Colors.red),
         ),
         iconTheme: IconThemeData(color: Colors.black),
@@ -75,8 +75,8 @@ class _AccountEditState extends State<AccountEdit> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 }
-                Map<String, dynamic> data =
-                    snapshot.data!.data() as Map<String, dynamic>;
+                Map<String, String> data =
+                    snapshot.data!.data() as Map<String, String>;
                 return Column(
                   children: [
                     GestureDetector(
@@ -90,7 +90,7 @@ class _AccountEditState extends State<AccountEdit> {
                             child: CircleAvatar(
                               backgroundImage:
                                   data['imgUrl'] != null && data['imgUrl'] != ''
-                                      ? NetworkImage(data['imgUrl'])
+                                      ? NetworkImage(data['imgUrl']!)
                                       : null,
                               child:
                                   data['imgUrl'] != null && data['imgUrl'] != ''
@@ -107,8 +107,8 @@ class _AccountEditState extends State<AccountEdit> {
                             ),
                           ),
                         )),
-                    Padding(padding: EdgeInsets.all(10)),
-                    Text(data['name']),
+                    const Padding(padding: EdgeInsets.all(10)),
+                    Text(data['name']!),
                     ElevatedButton(
                         onPressed: () async {
                           await FirebaseAuth.instance.signOut();
@@ -117,7 +117,7 @@ class _AccountEditState extends State<AccountEdit> {
                                   builder: (builder) => const Login()),
                               (Route<dynamic> route) => false);
                         },
-                        child: const Text("ログアウト")),
+                        child: const Text('ログアウト')),
                     ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
