@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:kagura_sns/firebase_options.dart';
 import 'package:kagura_sns/home_screen.dart';
 import 'package:kagura_sns/log/log_in.dart';
 
@@ -20,16 +19,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapShot) {
-            if (snapShot.connectionState == ConnectionState.waiting) {
-              return const SizedBox();
-            }
-            if (snapShot.hasData) {
-              return const HomeScreen();
-            }
-            return const Login();
-          }),
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapShot) {
+          if (snapShot.connectionState == ConnectionState.waiting) {
+            return const SizedBox();
+          }
+          if (snapShot.hasData) {
+            return const HomeScreen();
+          }
+          return const Login();
+        },
+      ),
     );
   }
 }
