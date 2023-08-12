@@ -53,7 +53,9 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
                   }
                   if (context.mounted) {
                     await Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute<void>(builder: (builder) => const Login()),
+                      MaterialPageRoute<void>(
+                        builder: (builder) => const Login(),
+                      ),
                       (Route<dynamic> route) => false,
                     );
                   }

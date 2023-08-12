@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:kagura_sns/log/log_in.dart';
+import 'package:kagura_sns/auth/log_in.dart';
 
 class DeleteDialogComponent extends StatelessWidget {
   const DeleteDialogComponent({
@@ -58,7 +58,7 @@ class DeleteDialogComponent extends StatelessWidget {
                   MaterialPageRoute<void>(builder: (builder) => const Login()),
                 );
               }
-            } catch (e) {
+            }on FirebaseAuthException catch (e) {
               const snackBar = SnackBar(
                 content: Text('ユーザーを削除しました'),
               );
