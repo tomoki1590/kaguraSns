@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'view/account_tab.dart';
 import 'view/kagura_add.dart';
-import 'view/kagura_tab.dart';
+import 'view/page/kagura_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
