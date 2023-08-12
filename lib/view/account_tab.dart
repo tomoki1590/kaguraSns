@@ -24,8 +24,7 @@ class _AccountTabState extends State<AccountTab> {
       const Text('ユーザーはログインしていません。');
     }
     CollectionReference usersCollection;
-    usersCollection =
-        FirebaseFirestore.instance.collection('users');
+    usersCollection = FirebaseFirestore.instance.collection('users');
 
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +37,7 @@ class _AccountTabState extends State<AccountTab> {
           ElevatedButton.icon(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
+                MaterialPageRoute<void>(
                   builder: (builder) => const AccountEdit(),
                 ),
               );

@@ -10,7 +10,7 @@ class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
@@ -23,29 +23,19 @@ class _LoginState extends State<Login> {
     });
   }
 
-  void setEmail(String email) {
+  Future<void> setEmail(String email) async {
     this.email = email;
   }
 
-  void setPassword(String password) {
+  Future<void> setPassword(String password) async {
     this.password = password;
   }
-
-  // Future<void> signInWithGogle() async {
-  //   final googleUser =
-  //       await GoogleSignIn(scopes: ['profile', 'email']).signIn();
-  //   final googleAuth = await googleUser?.authentication;
-  //   final credential = GoogleAuthProvider.credential(
-  //       accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
-
-  //   await FirebaseAuth.instance.signInWithCredential(credential);
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('入団'),
+        title: const Text('参画'),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -58,12 +48,10 @@ class _LoginState extends State<Login> {
                     padding: const EdgeInsets.symmetric(vertical: 30),
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: ValidateText.email,
-                      autofillHints: [AutofillHints.email],
+                      // validator: ValidateText.email,
+                      autofillHints: const [AutofillHints.email],
                       decoration: const InputDecoration(hintText: 'メールアドレス'),
-                      onChanged: (text) {
-                        setEmail(text);
-                      },
+                      onChanged: setEmail,
                     ),
                   ),
                 ),
@@ -72,21 +60,18 @@ class _LoginState extends State<Login> {
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: ValidateText.password,
-                    autofillHints: [AutofillHints.password],
+                    autofillHints: const [AutofillHints.password],
                     decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: Icon(isVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () {
-                            toggleShowPassword();
-                          },
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          isVisible ? Icons.visibility : Icons.visibility_off,
                         ),
-                        filled: true,
-                        hintText: 'パスワード'),
-                    onChanged: (text) {
-                      setPassword(text);
-                    },
+                        onPressed: toggleShowPassword,
+                      ),
+                      filled: true,
+                      hintText: 'パスワード',
+                    ),
+                    onChanged: setPassword,
                     obscureText: !isVisible,
                   ),
                 ),
@@ -94,45 +79,60 @@ class _LoginState extends State<Login> {
                   height: 16,
                 ),
                 ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        final User? user = (await FirebaseAuth.instance
-                                .signInWithEmailAndPassword(
-                                    email: email, password: password))
-                            .user;
-                        if (user != null) {
-                          final snackBar = SnackBar(
-                            content:
-                                Text('ログインしました${user.email} , ${user.uid}'),
-                          );
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (builder) => const HomeScreen()));
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }
-                      } catch (e) {
+                  onPressed: () async {
+                    try {
+                      final user = (await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      ))
+                          .user;
+                      if (user != null) {
                         final snackBar = SnackBar(
-                          content: Text('エラー発生しました$e'),
+                          content: Text('ログインしました${user.email} , ${user.uid}'),
                         );
+                        if (context.mounted) {
+                          await Navigator.of(context).pushReplacement(
+                            MaterialPageRoute<void>(
+                              builder: (builder) => const HomeScreen(),
+                            ),
+                          );
+                        }
+
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
-                    },
-                    child: const Text('ログイン')),
+                    } on Exception catch (e) {
+                      final snackBar = SnackBar(
+                        content: Text('エラー発生しました$e'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  },
+                  child: const Text('ログイン'),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
                   child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (builder) => PasswordChangePage()));
-                      },
-                      child: const Text('パスワードを忘れた方はこちら')),
+                    onPressed: () {
+                      Navigator.of(context).push<void>(
+                        MaterialPageRoute(
+                          builder: (builder) => const PasswordChangePage(),
+                        ),
+                      );
+                    },
+                    child: const Text('パスワードを忘れた方はこちら'),
+                  ),
                 ),
                 TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (builder) => const SignUp()));
-                    },
-                    child: const Text('初めての方はこちらから')),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute<void>(
+                        builder: (builder) => const SignUp(),
+                      ),
+                    );
+                  },
+                  child: const Text('初めての方はこちらから'),
+                ),
               ],
             ),
           ),

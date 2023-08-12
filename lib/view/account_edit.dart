@@ -19,11 +19,12 @@ class AccountEdit extends StatefulWidget {
 class _AccountEditState extends State<AccountEdit> {
   @override
   Widget build(BuildContext context) {
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final User? user = auth.currentUser;
-    CollectionReference usersCollection =
+    final auth = FirebaseAuth.instance;
+    final user = auth.currentUser;
+    CollectionReference usersCollection;
+    usersCollection =
         FirebaseFirestore.instance.collection('users');
-    String currentUid = '';
+    var currentUid = '';
 
     if (user != null) {
       currentUid = user.uid;
@@ -34,16 +35,16 @@ class _AccountEditState extends State<AccountEdit> {
     File? image;
     final picker = ImagePicker();
 
-    Future getImageFromGallery() async {
+    Future<void> getImageFromGallery() async {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         final doc = FirebaseFirestore.instance.collection('users').doc();
         image = File(pickedFile.path);
 
         if (image != null) {
-          FirebaseStorage storage = FirebaseStorage.instance;
+          final storage = FirebaseStorage.instance;
           final task = await storage.ref('users/${doc.id}').putFile(image!);
-          String imgUrl = await task.ref.getDownloadURL();
+          final imgUrl = await task.ref.getDownloadURL();
           await FirebaseFirestore.instance
               .collection('users')
               .doc(user!.uid)
@@ -59,74 +60,85 @@ class _AccountEditState extends State<AccountEdit> {
           '編集画面',
           style: TextStyle(color: Colors.red),
         ),
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Column(
         children: [
           const Text('画像を選択してください'),
           StreamBuilder(
-              stream: usersCollection.doc(currentUid).snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DocumentSnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('エラーが発生しました: ${snapshot.error}');
-                }
+            stream: usersCollection.doc(currentUid).snapshots(),
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<DocumentSnapshot> snapshot,
+            ) {
+              if (snapshot.hasError) {
+                return Text('エラーが発生しました: ${snapshot.error}');
+              }
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                }
-                Map<String, String> data =
-                    snapshot.data!.data() as Map<String, String>;
-                return Column(
-                  children: [
-                    GestureDetector(
-                        onTap: () async {
-                          await getImageFromGallery();
-                        },
-                        child: Center(
-                          child: SizedBox(
-                            width: 300,
-                            height: 300,
-                            child: CircleAvatar(
-                              backgroundImage:
-                                  data['imgUrl'] != null && data['imgUrl'] != ''
-                                      ? NetworkImage(data['imgUrl']!)
-                                      : null,
-                              child:
-                                  data['imgUrl'] != null && data['imgUrl'] != ''
-                                      ? null
-                                      : const Center(
-                                          child: Text(
-                                            '画像がありません',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                            ),
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+              final data = snapshot.data!.data() as Map<String, String>;
+              return Column(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      await getImageFromGallery();
+                    },
+                    child: Center(
+                      child: SizedBox(
+                        width: 300,
+                        height: 300,
+                        child: CircleAvatar(
+                          backgroundImage:
+                              data['imgUrl'] != null && data['imgUrl'] != ''
+                                  ? NetworkImage(data['imgUrl']!)
+                                  : null,
+                          child: data['imgUrl'] != null && data['imgUrl'] != ''
+                              ? null
+                              : const Center(
+                                  child: Text(
+                                    '画像がありません',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.all(10)),
+                  Text(data['name']!),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      if (context.mounted) {
+                        await Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute<void>(
+                            builder: (builder) => const Login(),
                           ),
-                        )),
-                    const Padding(padding: EdgeInsets.all(10)),
-                    Text(data['name']!),
-                    ElevatedButton(
-                        onPressed: () async {
-                          await FirebaseAuth.instance.signOut();
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (builder) => const Login()),
-                              (Route<dynamic> route) => false);
-                        },
-                        child: const Text('ログアウト')),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (builder) => ReLoginPage()));
-                        },
-                        child: const Text('アカウント削除')),
-                  ],
-                );
-              }),
+                          (Route<dynamic> route) => false,
+                        );
+                      }
+                    },
+                    child: const Text('ログアウト'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (builder) => const ReLoginPage(),
+                        ),
+                      );
+                    },
+                    child: const Text('アカウント削除'),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );

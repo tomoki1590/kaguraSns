@@ -3,43 +3,44 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class Block extends StatelessWidget {
+  const Block({Key? key, required this.block, required this.onPressed})
+      : super(key: key);
   final String block;
   final Function() onPressed;
-  Block({Key? key, required this.block, required this.onPressed})
-      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final User? user = auth.currentUser;
+    final auth = FirebaseAuth.instance;
+    final user = auth.currentUser;
 
-    CollectionReference kaguraBlock =
+    CollectionReference kaguraBlock;
+    kaguraBlock =
         FirebaseFirestore.instance.collection('users');
 
-    String currentUid = "";
+    var currentUid = '';
 
     if (user != null) {
       currentUid = user.uid;
       Text(currentUid);
     } else {
-      const Text("ユーザーはログインしていません。");
+      const Text('ユーザーはログインしていません。');
     }
     // DocumentReference<Map<String, dynamic>> kaguraUid =
     //     FirebaseFirestore.instance.collection('users').doc("uid");
 
     return CupertinoAlertDialog(
-      title: Text('この投稿者ブロックしますか？'),
+      title: const Text('この投稿者ブロックしますか？'),
       actions: [
         CupertinoDialogAction(
-          child: Text('ブロックしません'),
+          child: const Text('ブロックしません'),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         CupertinoDialogAction(
-          child: Text('ブロックします'),
+          child: const Text('ブロックします'),
           onPressed: () async {
-            kaguraBlock.doc(user!.uid).update({
+            await kaguraBlock.doc(user!.uid).update({
               'block': FieldValue.arrayUnion([block])
             });
             onPressed();

@@ -33,7 +33,7 @@ class _SignUpState extends State<SignUp> {
   bool _termsFlag = false;
   bool _disclaimerFlag = false;
 
-  Future getImageFromGallery() async {
+  getImageFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
@@ -48,15 +48,15 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
-  void setName(String name) {
+  Future<void> setName(String name) async {
     this.name = name;
   }
 
-  void setEmail(String email) {
+  Future<void> setEmail(String email) async {
     this.email = email;
   }
 
-  void setPassword(String password) {
+  Future<void> setPassword(String password) async {
     this.password = password;
   }
 
@@ -73,9 +73,7 @@ class _SignUpState extends State<SignUp> {
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: () {
-                    getImageFromGallery();
-                  },
+                  onTap: getImageFromGallery,
                   child: CircleAvatar(
                     foregroundImage: image == null ? null : FileImage(image!),
                     radius: 50,
@@ -89,9 +87,7 @@ class _SignUpState extends State<SignUp> {
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: const InputDecoration(hintText: 'ユーザーネーム'),
-                      onChanged: (text) {
-                        setName(text);
-                      },
+                      onChanged: setName,
                     ),
                   ),
                 ),
@@ -101,11 +97,9 @@ class _SignUpState extends State<SignUp> {
                     padding: const EdgeInsets.symmetric(vertical: 30),
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: ValidateText.email,
+                      validator: ValidateText.password,
                       decoration: const InputDecoration(hintText: 'メールアドレス'),
-                      onChanged: (text) {
-                        setEmail(text);
-                      },
+                      onChanged: setEmail,
                     ),
                   ),
                 ),
@@ -115,41 +109,39 @@ class _SignUpState extends State<SignUp> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: ValidateText.password,
                     decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: Icon(isVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () {
-                            toggleShowPassword();
-                          },
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          isVisible ? Icons.visibility : Icons.visibility_off,
                         ),
-                        filled: true,
-                        hintText: 'パスワード'),
-                    onChanged: (text) {
-                      setPassword(text);
-                    },
+                        onPressed: toggleShowPassword,
+                      ),
+                      filled: true,
+                      hintText: 'パスワード',
+                    ),
+                    onChanged: setPassword,
                     obscureText: !isVisible,
                   ),
                 ),
-                Text('登録前に下記の事項に目を通してください'),
+                const Text('登録前に下記の事項に目を通してください'),
                 Row(
                   children: [
                     Checkbox(
-                        value: _termsFlag,
-                        onChanged: (value) {
-                          setState(() {
-                            _termsFlag = !_termsFlag;
-                          });
-                        }),
+                      value: _termsFlag,
+                      onChanged: (value) {
+                        setState(() {
+                          _termsFlag = !_termsFlag;
+                        });
+                      },
+                    ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute<void>(
-                            builder: (context) => TermsOfServicePage(),
+                            builder: (context) => const TermsOfServicePage(),
                           ),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         '利用規約',
                         style: TextStyle(fontSize: 15),
                       ),
@@ -159,17 +151,18 @@ class _SignUpState extends State<SignUp> {
                 Row(
                   children: [
                     Checkbox(
-                        value: _disclaimerFlag,
-                        onChanged: (value) {
-                          setState(() {
-                            _disclaimerFlag = !_disclaimerFlag;
-                          });
-                        }),
+                      value: _disclaimerFlag,
+                      onChanged: (value) {
+                        setState(() {
+                          _disclaimerFlag = !_disclaimerFlag;
+                        });
+                      },
+                    ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute<void>(
-                            builder: (context) => DisclaimerPage(),
+                            builder: (context) => const DisclaimerPage(),
                           ),
                         );
                       },
@@ -181,66 +174,71 @@ class _SignUpState extends State<SignUp> {
                   ],
                 ),
                 ElevatedButton(
-                    onPressed: () async {
-                      if (_disclaimerFlag == true &&
-                          _termsFlag == true &&
-                          (name != null || name != '')) {
-                        if (_formKey.currentState!.validate()) {
-                          try {
-                            UserCredential userCredential = await FirebaseAuth
-                                .instance
-                                .createUserWithEmailAndPassword(
-                                    email: email, password: password);
-                            User? user = userCredential.user;
-                            if (user != null) {
-                              final doc = _firestore.collection('users').doc();
-                              if (image != null) {
-                                FirebaseStorage storage =
-                                    FirebaseStorage.instance;
-                                final task = await storage
-                                    .ref('users/${doc.id}')
-                                    .putFile(image!);
-                                imgUrl = await task.ref.getDownloadURL();
-                              }
-                              await _firestore
-                                  .collection('users')
-                                  .doc(user.uid)
-                                  .set({
-                                'name': name,
-                                'email': email,
-                                'uid': user.uid,
-                                'imgUrl': imgUrl,
-                              });
+                  onPressed: () async {
+                    if (_disclaimerFlag == true &&
+                        _termsFlag == true &&
+                        (name != '')) {
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          UserCredential userCredential;
+                          userCredential = await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: email,
+                            password: password,
+                          );
+                          final user = userCredential.user;
+                          if (user != null) {
+                            final doc = _firestore.collection('users').doc();
+                            if (image != null) {
+                              final storage = FirebaseStorage.instance;
+                              final task = await storage
+                                  .ref('users/${doc.id}')
+                                  .putFile(image!);
+                              imgUrl = await task.ref.getDownloadURL();
                             }
-                            await _firestore.collection('users').add({
+                            await _firestore
+                                .collection('users')
+                                .doc(user.uid)
+                                .set({
                               'name': name,
                               'email': email,
-                              'uid': uid,
+                              'uid': user.uid,
                               'imgUrl': imgUrl,
                             });
-                            const snackBar = SnackBar(
-                              content: Text('新規登録完了です'),
+                          }
+                          await _firestore.collection('users').add({
+                            'name': name,
+                            'email': email,
+                            'uid': uid,
+                            'imgUrl': imgUrl,
+                          });
+                          const snackBar = SnackBar(
+                            content: Text('新規登録完了です'),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          if (context.mounted) {
+                            await Navigator.of(context).pushReplacement(
+                              MaterialPageRoute<void>(
+                                builder: (builder) => const Login(),
+                              ),
                             );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (builder) => const Login()));
-                          } on FirebaseAuthException catch (e) {
-                            if (e.code == 'email-already-in-use') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('このメールアドレスはすでに登録されています'),
-                                ),
-                              );
-                            } else {
-                              rethrow;
-                            }
+                          }
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'email-already-in-use') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('このメールアドレスはすでに登録されています'),
+                              ),
+                            );
+                          } else {
+                            rethrow;
                           }
                         }
                       }
-                    },
-                    child: const Text('新規登録'))
+                    }
+                  },
+                  child: const Text('新規登録'),
+                )
               ],
             ),
           ),

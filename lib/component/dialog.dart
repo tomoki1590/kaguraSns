@@ -16,8 +16,9 @@ class AlertDialogComponent extends StatelessWidget {
         ),
         GestureDetector(
           child: TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('はい')),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('はい'),
+          ),
         )
       ],
     );

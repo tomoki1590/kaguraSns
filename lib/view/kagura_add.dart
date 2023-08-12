@@ -20,16 +20,16 @@ class _KaguraAddState extends State<KaguraAdd> {
   File? image;
   final picker = ImagePicker();
   List<XFile>? imageList = [];
-  String kagura = "";
-  String place = "";
-  String point = "";
-  String uid = "";
+  String kagura = '';
+  String place = '';
+  String point = '';
+  String uid = '';
   String? imgUrl;
 
   final userID = FirebaseAuth.instance.currentUser?.uid ?? '';
 
   final FirebaseFirestore _kaguraFire = FirebaseFirestore.instance;
-  Future getImageFromGallery() async {
+  Future<void> getImageFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
@@ -38,15 +38,15 @@ class _KaguraAddState extends State<KaguraAdd> {
     }
   }
 
-  void setKagura(String kagura) {
+  Future<void> setKagura(String kagura) async {
     this.kagura = kagura;
   }
 
-  void setPlace(String place) {
+  Future<void> setPlace(String place) async {
     this.place = place;
   }
 
-  void setPoint(String point) {
+  Future<void> setPoint(String point) async {
     this.point = point;
   }
 
@@ -57,38 +57,45 @@ class _KaguraAddState extends State<KaguraAdd> {
         backgroundColor: Colors.white,
         actions: [
           ElevatedButton.icon(
-              onPressed: () async {
-                bool shouldPost = await showDialog(
-                        context: context,
-                        builder: (_) {
-                          return AlertDialogComponent();
-                        }) ??
-                    false;
-                if (shouldPost) {
-                  final doc = _kaguraFire.collection('kagura').doc();
-                  if (image != null) {
-                    FirebaseStorage storage = FirebaseStorage.instance;
-                    final task =
-                        await storage.ref('kagura/${doc.id}').putFile(image!);
-                    imgUrl = await task.ref.getDownloadURL();
-                  }
-
-                  await doc.set({
-                    'kagura': kagura,
-                    'place': place,
-                    'point': point,
-                    'imgUrl': imgUrl,
-                    "uid": FirebaseAuth.instance.currentUser!.uid,
-                  });
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (builder) => const HomeScreen()));
+            onPressed: () async {
+              final shouldPost = await showDialog(
+                    context: context,
+                    builder: (_) {
+                      return const AlertDialogComponent();
+                    },
+                  ) ??
+                  false;
+              if (shouldPost as bool) {
+                final doc = _kaguraFire.collection('kagura').doc();
+                if (image != null) {
+                  final storage = FirebaseStorage.instance;
+                  final task =
+                      await storage.ref('kagura/${doc.id}').putFile(image!);
+                  imgUrl = await task.ref.getDownloadURL();
                 }
-              },
-              label: const Text('投稿'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 6, 6, 6),
-              ),
-              icon: Icon(Icons.send))
+
+                await doc.set({
+                  'kagura': kagura,
+                  'place': place,
+                  'point': point,
+                  'imgUrl': imgUrl,
+                  'uid': FirebaseAuth.instance.currentUser!.uid,
+                });
+                if (context.mounted) {
+                  await Navigator.of(context).pushReplacement(
+                    MaterialPageRoute<void>(
+                      builder: (builder) => const HomeScreen(),
+                    ),
+                  );
+                }
+              }
+            },
+            label: const Text('投稿'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 6, 6, 6),
+            ),
+            icon: const Icon(Icons.send),
+          )
         ],
         title: const Text('神楽情報発信', style: TextStyle(color: Colors.red)),
       ),
@@ -102,10 +109,8 @@ class _KaguraAddState extends State<KaguraAdd> {
                   padding: const EdgeInsets.symmetric(vertical: 30),
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: const InputDecoration(hintText: "演目名"),
-                    onChanged: (text) {
-                      setKagura(text);
-                    },
+                    decoration: const InputDecoration(hintText: '演目名'),
+                    onChanged: setKagura,
                   ),
                 ),
               ),
@@ -115,10 +120,8 @@ class _KaguraAddState extends State<KaguraAdd> {
                   padding: const EdgeInsets.symmetric(vertical: 30),
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: const InputDecoration(hintText: "場所"),
-                    onChanged: (text) {
-                      setPlace(text);
-                    },
+                    decoration: const InputDecoration(hintText: '場所'),
+                    onChanged: setPlace,
                   ),
                 ),
               ),
@@ -128,10 +131,8 @@ class _KaguraAddState extends State<KaguraAdd> {
                   padding: const EdgeInsets.symmetric(vertical: 30),
                   child: TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: const InputDecoration(hintText: "推したいポイント"),
-                    onChanged: (text) {
-                      setPoint(text);
-                    },
+                    decoration: const InputDecoration(hintText: '推したいポイント'),
+                    onChanged: setPoint,
                   ),
                 ),
               ),
@@ -148,13 +149,11 @@ class _KaguraAddState extends State<KaguraAdd> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.camera_enhance, size: 30),
-                    onPressed: () {
-                      getImageFromGallery();
-                    },
+                    onPressed: getImageFromGallery,
                   ),
                 ],
               ),
-              image != null ? Image.file(image!) : const Text("何も選ばれてませんよ")
+              image != null ? Image.file(image!) : const Text('何も選ばれてませんよ')
             ],
           ),
         ),
