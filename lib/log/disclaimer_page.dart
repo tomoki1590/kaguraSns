@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class DisclaimerPage extends StatelessWidget {
+  const DisclaimerPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("免責事項"),
+        title: const Text('免責事項'),
       ),
-      body: Text(
+      body: const Text(
         ''' ※アプリをご利用の際の通信料は、お客さまのご負担となります。
 なお、本アプリケーションは、以下の事項を確認し、同意いただいたうえでご利用下さい。
 本アプリケーションの利用をもって、本免責事項に同意いただいたものとみなします。
