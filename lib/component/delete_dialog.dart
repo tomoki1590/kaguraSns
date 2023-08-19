@@ -58,7 +58,7 @@ class DeleteDialogComponent extends StatelessWidget {
                   MaterialPageRoute<void>(builder: (builder) => const Login()),
                 );
               }
-            }on FirebaseAuthException catch (e) {
+            } on FirebaseAuthException {
               const snackBar = SnackBar(
                 content: Text('ユーザーを削除しました'),
               );
