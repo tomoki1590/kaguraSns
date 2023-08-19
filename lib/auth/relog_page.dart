@@ -82,7 +82,7 @@ class _ReLoginPageState extends State<ReLoginPage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                await showDialog(
+                await showDialog<void>(
                   context: context,
                   builder: (_) {
                     return DeleteDialogComponent(
