@@ -71,7 +71,7 @@ class _AccountTabState extends State<AccountTab> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 }
-                final data = snapshot.data!.data() as Map<String, String>;
+                final data = snapshot.data!.data()! as Map<String, Object?>;
                 return Column(
                   children: [
                     SizedBox(
@@ -80,7 +80,7 @@ class _AccountTabState extends State<AccountTab> {
                       child: CircleAvatar(
                         backgroundImage:
                             data['imgUrl'] != null && data['imgUrl'] != ''
-                                ? NetworkImage(data['imgUrl']!)
+                                ? NetworkImage(data['imgUrl']! as String)
                                 : null,
                         child: data['imgUrl'] != null && data['imgUrl'] != ''
                             ? null
@@ -96,8 +96,8 @@ class _AccountTabState extends State<AccountTab> {
                       ),
                     ),
                     ListTile(
-                      title: Text(data['name']!),
-                      subtitle: Text(data['email']!),
+                      title: Text(data['name']! as String),
+                      subtitle: Text(data['email']! as String),
                     ),
                     const Divider(),
                     const Text('これまでに投稿したもの'),
@@ -135,18 +135,20 @@ class _AccountTabState extends State<AccountTab> {
                             shrinkWrap: true,
                             itemCount: kaguraList.length,
                             itemBuilder: (BuildContext context, int index) {
-                              final kagura = kaguraList[index].data()
-                                  as Map<String, String>;
+                              final kagura = kaguraList[index].data()!
+                                  as Map<String, Object?>;
                               return Card(
                                 child: SizedBox(
                                   width: double.infinity,
                                   child: Column(
                                     children: [
-                                      Text(kagura['kagura']!),
-                                      Text(kagura['point']!),
-                                      Text(kagura['place']!),
+                                      Text(kagura['kagura']! as String),
+                                      Text(kagura['point']! as String),
+                                      Text(kagura['place']! as String),
                                       kagura['imgUrl'] != null
-                                          ? Image.network(kagura['imgUrl']!)
+                                          ? Image.network(
+                                              kagura['imgUrl']! as String,
+                                            )
                                           : const Text('画像なし'),
                                     ],
                                   ),
@@ -156,7 +158,7 @@ class _AccountTabState extends State<AccountTab> {
                           );
                         },
                       ),
-                    )
+                    ),
                   ],
                 );
               },
