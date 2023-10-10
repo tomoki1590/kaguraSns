@@ -9,6 +9,5 @@ class Kagura with _$Kagura {
     required String id,
     @Default('') String uid,
   }) = _Kagura;
-  factory Kagura.fromJson(Map<String, dynamic> json) =>
-   _$KaguraFromJson(json);
+  factory Kagura.fromJson(Map<String, dynamic> json) => _$KaguraFromJson(json);
 }
