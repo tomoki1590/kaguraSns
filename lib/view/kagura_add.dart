@@ -30,10 +30,12 @@ class _KaguraAddState extends State<KaguraAdd> {
 
   final FirebaseFirestore _kaguraFire = FirebaseFirestore.instance;
   Future<void> getImageFromGallery() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
+    final pickedFiles = await picker.pickMultiImage();
+
+    if (pickedFiles.isNotEmpty) {
       setState(() {
-        image = File(pickedFile.path);
+        imageList =
+            pickedFiles.map((file) => File(file.path)).cast<XFile>().toList();
       });
     }
   }
@@ -95,7 +97,7 @@ class _KaguraAddState extends State<KaguraAdd> {
               backgroundColor: const Color.fromARGB(255, 6, 6, 6),
             ),
             icon: const Icon(Icons.send),
-          )
+          ),
         ],
         title: const Text('神楽情報発信', style: TextStyle(color: Colors.red)),
       ),
@@ -153,7 +155,7 @@ class _KaguraAddState extends State<KaguraAdd> {
                   ),
                 ],
               ),
-              image != null ? Image.file(image!) : const Text('何も選ばれてませんよ')
+              image != null ? Image.file(image!) : const Text('何も選ばれてませんよ'),
             ],
           ),
         ),
