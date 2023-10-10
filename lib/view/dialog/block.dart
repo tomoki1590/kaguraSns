@@ -14,8 +14,7 @@ class Block extends StatelessWidget {
     final user = auth.currentUser;
 
     CollectionReference kaguraBlock;
-    kaguraBlock =
-        FirebaseFirestore.instance.collection('users');
+    kaguraBlock = FirebaseFirestore.instance.collection('users');
 
     var currentUid = '';
 
@@ -41,12 +40,12 @@ class Block extends StatelessWidget {
           child: const Text('ブロックします'),
           onPressed: () async {
             await kaguraBlock.doc(user!.uid).update({
-              'block': FieldValue.arrayUnion([block])
+              'block': FieldValue.arrayUnion([block]),
             });
             onPressed();
             Navigator.pop(context);
           },
-        )
+        ),
       ],
     );
   }
