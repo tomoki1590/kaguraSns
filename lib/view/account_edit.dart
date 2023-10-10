@@ -6,8 +6,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../log/log_in.dart';
-import '../log/relog_page.dart';
+import '../auth/log_in.dart';
+import '../auth/relog_page.dart';
 
 class AccountEdit extends StatefulWidget {
   const AccountEdit({Key? key}) : super(key: key);
@@ -22,8 +22,7 @@ class _AccountEditState extends State<AccountEdit> {
     final auth = FirebaseAuth.instance;
     final user = auth.currentUser;
     CollectionReference usersCollection;
-    usersCollection =
-        FirebaseFirestore.instance.collection('users');
+    usersCollection = FirebaseFirestore.instance.collection('users');
     var currentUid = '';
 
     if (user != null) {
@@ -78,7 +77,7 @@ class _AccountEditState extends State<AccountEdit> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               }
-              final data = snapshot.data!.data() as Map<String, String>;
+              final data = snapshot.data!.data()! as Map<String, Object?>;
               return Column(
                 children: [
                   GestureDetector(
@@ -92,7 +91,7 @@ class _AccountEditState extends State<AccountEdit> {
                         child: CircleAvatar(
                           backgroundImage:
                               data['imgUrl'] != null && data['imgUrl'] != ''
-                                  ? NetworkImage(data['imgUrl']!)
+                                  ? NetworkImage(data['imgUrl']! as String)
                                   : null,
                           child: data['imgUrl'] != null && data['imgUrl'] != ''
                               ? null
@@ -110,7 +109,7 @@ class _AccountEditState extends State<AccountEdit> {
                     ),
                   ),
                   const Padding(padding: EdgeInsets.all(10)),
-                  Text(data['name']!),
+                  Text(data['name']! as String),
                   ElevatedButton(
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
