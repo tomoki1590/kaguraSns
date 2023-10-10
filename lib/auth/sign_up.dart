@@ -33,13 +33,14 @@ class _SignUpState extends State<SignUp> {
   bool _termsFlag = false;
   bool _disclaimerFlag = false;
 
-  getImageFromGallery() async {
+  Future<void> getImageFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         image = File(pickedFile.path);
       });
     }
+    return;
   }
 
   void toggleShowPassword() {
@@ -212,11 +213,12 @@ class _SignUpState extends State<SignUp> {
                             'uid': uid,
                             'imgUrl': imgUrl,
                           });
-                          const snackBar = SnackBar(
-                            content: Text('新規登録完了です'),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           if (context.mounted) {
+                            const snackBar = SnackBar(
+                              content: Text('新規登録完了です'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
                             await Navigator.of(context).pushReplacement(
                               MaterialPageRoute<void>(
                                 builder: (builder) => const Login(),
@@ -238,7 +240,7 @@ class _SignUpState extends State<SignUp> {
                     }
                   },
                   child: const Text('新規登録'),
-                )
+                ),
               ],
             ),
           ),
