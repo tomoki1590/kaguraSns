@@ -72,7 +72,7 @@ class DeleteDialogComponent extends StatelessWidget {
             }
           },
           child: const Text('はい'),
-        )
+        ),
       ],
     );
   }

@@ -61,7 +61,7 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
                   }
                 },
                 child: const Text('送信'),
-              )
+              ),
             ],
           ),
         ),

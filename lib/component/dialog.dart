@@ -19,7 +19,7 @@ class AlertDialogComponent extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(true),
             child: const Text('はい'),
           ),
-        )
+        ),
       ],
     );
   }
