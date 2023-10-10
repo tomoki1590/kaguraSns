@@ -12,8 +12,7 @@ class ReportePage extends StatelessWidget {
     BuildContext context,
   ) {
     CollectionReference kaguraSNSCollection;
-    kaguraSNSCollection =
-        FirebaseFirestore.instance.collection('report');
+    kaguraSNSCollection = FirebaseFirestore.instance.collection('report');
     return CupertinoAlertDialog(
       title: const Text('この投稿を通報しますか？'),
       content: const Text('この投稿は本当に神楽に関していませんか？もしくは無断転載などだと判断されておりますでしょうか'),
@@ -30,7 +29,7 @@ class ReportePage extends StatelessWidget {
             unawaited(kaguraSNSCollection.add({'docId': docId}));
             Navigator.pop(context);
           },
-        )
+        ),
       ],
     );
   }
